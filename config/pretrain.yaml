@@ -1,0 +1,55 @@
+# Fill in data.root_dir before training. Paths are relative to the repository root.
+stage: pretrain
+seed: 42
+runtime:
+  device: cuda
+output:
+  root_dir: outputs
+  run_name: pretrain
+data:
+  root_dir: []  # One or more dataset roots.
+  val_ratio: 0.1
+  split_seed: null
+  preload_to_ram: true
+  force_key: finger_force_30hz
+  state_key: state
+  tactile_left_key: gripper1_tactile_30hz
+  tactile_right_key: gripper2_tactile_30hz
+  tactile_shape:
+  - 35
+  - 20
+model:
+  contact_encoder:
+    force_dim: 12
+    pos_dim: 3
+    tactile_channels: 6
+    recon_tactile_weight: 1.0
+    sample_points: 128
+    num_tokens: 16
+    latent_dim: 128
+    codebook_size: 128
+    hidden_dim: 256
+    num_layers: 4
+    conv_kernel_size: 5
+    dropout: 0.1
+    beta: 0.25  # VQ commitment weight, used only during pretraining.
+    uniform_ratio: 0.5
+    fps_smoothing_kernel: 3
+    recon_pos_weight: 1.0
+    recon_force_weight: 1.0
+    masked_modality_probability: 0.25
+checkpoint:
+  save_every: 100
+  val_every: 5
+train:
+  batch_size: 64
+  val_batch_size: 64
+  num_workers: 8
+  epochs: 100
+  grad_clip: 1.0
+  normalizer:
+    force_min_range: 0.001
+    max_abs_scale: 100.0
+  optimizer:
+    lr: 0.0003
+    weight_decay: 0.0001

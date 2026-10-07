@@ -1,0 +1,11 @@
+__pycache__
+.vscode
+.local-wip
+outputs
+*.pt
+logs/
+tmp/
+.venv/
+.pytest_cache/
+*.zarr/
+*.pth

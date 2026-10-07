@@ -1,0 +1,89 @@
+# Fill in data.root_dir before training. Paths are relative to the repository root.
+# Set model.policy.reference_encoder.checkpoint to the pretrained contact checkpoint.
+# Reference tokens are continuous; encoder weights are fine-tuned with the policy.
+stage: policy
+seed: 42
+runtime:
+  device: cuda
+output:
+  root_dir: outputs
+  run_name: policy
+data:
+  root_dir: []  # One or more dataset roots.
+  val_ratio: 0.1
+  split_seed: null
+  window_size: 8
+  stride: 1
+  n_image_steps: 1
+  image_size: 224
+  preload_to_ram: true
+  image_as_uint8: true
+  action_window_size: 32
+  latent_cache_root_dir: null
+  action_representation: chunk_relative
+  image_keys:
+  - global_rgb_cam
+  - left_cam1
+  force_key: finger_force_30hz
+  state_key: state
+  action_key: action
+  tactile_left_key: gripper1_tactile_30hz
+  tactile_right_key: gripper2_tactile_30hz
+  reference_cache_root_dir: auto
+model:
+  policy:
+    action_dim: 10
+    state_dim: 10
+    cond_dim: 256
+    n_action_steps: 32
+    freeze_image_encoder: true
+    image_pretrained: true
+    dino_model_name: vit_small_patch14_dinov2.lvd142m
+    contact_prompt:
+      token_dim: 128
+      num_heads: 4
+      num_layers: 3
+      tactile:
+        hand_dim: 16
+        hidden_channels: 32
+        mid_channels: 32
+    diffusion_step_embed_dim: 256
+    down_dims:
+    - 256
+    - 512
+    - 1024
+    kernel_size: 5
+    n_groups: 8
+    inference:
+      num_inference_steps: 16
+    force_prediction:
+      force_indices:
+      - 6
+      - 7
+      - 8
+      horizon: 8
+      hidden_dim: 256
+      loss_weight: 0.1
+    reference_encoder:
+      checkpoint: null
+train:
+  batch_size: 256
+  val_batch_size: 256
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 4
+  epochs: 200
+  grad_clip: 1.0
+  use_amp: true
+  normalizer_max_rows: 500000
+  open_loop_test_every: 5
+  open_loop_test_max_batches: 20
+  optimizer:
+    lr: 0.0001
+    weight_decay: 0.0001
+    reference_encoder_lr: 1.0e-05
+checkpoint:
+  save_every: 100
+  val_every: 5
+  best_metric: loss
