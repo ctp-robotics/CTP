@@ -1,10 +1,16 @@
-# Contact Trajectory Prompting: In-Context Transfer of Contact-Rich Behaviors from a Single Demonstration
+<h1 align="center">Contact Trajectory Prompting:<br>In-Context Transfer of Contact-Rich Behaviors from a Single Demonstration</h1>
 
-Xian Nie<sup>*,1,2</sup>, Yujie Zang<sup>*,1,2,3</sup>, Yuhang Zheng<sup>*,3</sup>, Yupeng Zheng<sup>4</sup>, Songen Gu<sup>5</sup>, Wendi Chen<sup>1</sup>, Chuan Wen<sup>1</sup>, Cewu Lu<sup>1</sup>, Wenchao Ding<sup>2</sup>, Junchi Yan<sup>1</sup>, Shuicheng Yan<sup>3</sup>
+<p align="center">
+  Xian Nie<sup>*,1,2</sup>, Yujie Zang<sup>*,1,2,3</sup>, Yuhang Zheng<sup>*,3</sup>, Yupeng Zheng<sup>4</sup>, Songen Gu<sup>5</sup>, Wendi Chen<sup>1</sup>,<br>
+  Chuan Wen<sup>1</sup>, Cewu Lu<sup>1</sup>, Wenchao Ding<sup>2</sup>, Junchi Yan<sup>1</sup>, Shuicheng Yan<sup>3</sup>
+</p>
 
-¹ Shanghai Jiao Tong University · ² TARS Robotics · ³ National University of Singapore · ⁴ Institute of Automation, Chinese Academy of Sciences · ⁵ Fudan University
+<p align="center">
+  <sup>1</sup> Shanghai Jiao Tong University · <sup>2</sup> TARS Robotics · <sup>3</sup> National University of Singapore<br>
+  <sup>4</sup> Institute of Automation, Chinese Academy of Sciences · <sup>5</sup> Fudan University
+</p>
 
-*Equal contribution: Xian Nie, Yujie Zang, and Yuhang Zheng.*
+<p align="center">* Equal contribution</p>
 
 Contact Trajectory Prompting conditions a robot action policy on a reference
 demonstration containing force, tactile, and position measurements. Online visual,
@@ -18,14 +24,19 @@ loss during training.
 
 Training has two stages:
 
-1. **Contact encoder pretraining:** `ContactAutoencoder` learns a contact representation from relative
-   position, force, and tactile sequences. Hybrid temporal/force sampling selects
-   128 points, which are encoded into 16 tokens. The encoder uses hand-specific
-   contact fusion, modality masking, and the original normalized sample times.
+1. **Contact encoder pretraining:** `ContactAutoencoder` learns a contact representation
+   from relative position, force, and tactile sequences. The default configuration
+   samples 128 points using uniform temporal anchors and force-space farthest-point
+   sampling, then encodes them into 16 ordered tokens. The encoder fuses force and
+   tactile features for each hand and uses modality masking and normalized source-frame times.
 2. **Policy training:** `ContactPolicy` initializes the reference encoder from the
-   pretrained checkpoint and fine-tunes its continuous tokens with the action
-   policy. The auxiliary head uses online state, force, and predicted actions to
-   predict the next 8 steps of force change. The action flow remains 10-dimensional.
+   pretrained checkpoint and fine-tunes it jointly with the action policy, using
+   continuous reference tokens. An auxiliary head uses online state, force, and
+   predicted actions to predict future force changes. The default configuration
+   predicts 8 steps of force change and uses 10-dimensional actions.
+
+At inference, the encoder and policy parameters remain fixed; a single reference
+demonstration provides the contact prompt.
 
 The policy uses continuous encoder outputs. The codebook and commitment loss
 are used during contact encoder pretraining.
