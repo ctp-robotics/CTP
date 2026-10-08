@@ -59,6 +59,19 @@ The two tactile streams are specified by `tactile_left_key` and `tactile_right_k
 
 ## Quick start
 
+**0. Convert raw recordings** (skip if you already have Zarr data).
+
+```bash
+python tools/convert_dataset.py --input path/to/raw_episodes --output path/to/dataset
+```
+
+Each raw episode contains `camera/*.mp4`, `camera/timestamps.pkl`, `state.pkl`,
+`gripper.pkl`, `tactile.pkl`, and `force.pkl`. The converter aligns streams at 30 Hz
+and writes `replay_buffer.zarr`; set `data.root_dir` to the output directory.
+A single buffer is split by episode during training. For explicit splits, convert
+train and validation recordings separately into `dataset/train` and `dataset/val`.
+Run `python tools/convert_dataset.py --help` for input fields and options.
+
 **1. Pretrain the contact encoder.**
 
 ```bash
