@@ -44,14 +44,18 @@ dataset_root/
 Each buffer contains aligned sensor and action arrays under `data/`, with episode
 boundaries in `meta/episode_ends`. Key names are configured in YAML.
 
-| Field | Shape |
-| --- | --- |
-| RGB images | `[T, H, W, 3]` |
-| State / absolute action | `[T, 10]` |
-| Bilateral force | `[T, 12]` |
-| Tactile, per hand | `[T, 35, 20, 3]` or `[T, 700, 3]` |
-| `meta/episode_ends` | `[N]`, exclusive cumulative episode ends |
-| `meta/behavior_id` (optional) | `[N]`, used for reference selection |
+| Field | Shape | Description |
+| --- | --- | --- |
+| Camera image, per view | `[T, H, W, 3]` | `uint8` BGR; converted to RGB by the loader |
+| State / absolute action | `[T, 10]` | Position (3), rotation in 6D representation (6), gripper (1) |
+| Force / torque | `[T, 12]` | Left then right finger; each has 3 force and 3 torque components |
+| Tactile, per finger | `[T, 35, 20, 3]` or `[T, 700, 3]` | 3D displacement field on a 35 × 20 tactile grid |
+| `meta/episode_ends` | `[N]` | Exclusive cumulative episode ends |
+| `meta/behavior_id` (optional) | `[N]` | Behavior labels for splitting and reference selection |
+
+Multiple camera views are stored as separate arrays and listed in `data.image_keys`,
+e.g. `[global_rgb_cam, left_cam1]`. Use the same view order during training and inference.
+The two tactile streams are specified by `tactile_left_key` and `tactile_right_key`.
 
 ## Quick start
 
