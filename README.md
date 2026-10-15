@@ -12,6 +12,8 @@
 
 <p align="center">* Equal contribution</p>
 
+<p align="center"><a href="https://arxiv.org/abs/2610.18848">Paper (arXiv)</a></p>
+
 Official implementation of **Contact Trajectory Prompting (CTP)** for transferring
 contact-rich behaviors from a single demonstration.
 
@@ -122,6 +124,10 @@ python -m tools.smoke_test
 @misc{nie2026contacttrajectoryprompting,
   title = {Contact Trajectory Prompting: In-Context Transfer of Contact-Rich Behaviors from a Single Demonstration},
   author = {Nie, Xian and Zang, Yujie and Zheng, Yuhang and Zheng, Yupeng and Gu, Songen and Chen, Wendi and Wen, Chuan and Lu, Cewu and Ding, Wenchao and Yan, Junchi and Yan, Shuicheng},
-  year = {2026}
+  year = {2026},
+  eprint = {2610.18848},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.RO},
+  url = {https://arxiv.org/abs/2610.18848}
 }
 ```
